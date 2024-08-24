@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
+//qrコードの表示
 class QRCodeScreen extends StatelessWidget {
   const QRCodeScreen({super.key}) ;  // keyを追加
   @override
@@ -31,6 +32,7 @@ class QRCodeScreen extends StatelessWidget {
   }
 }
 
+//カメラ機能
 class QRViewExample extends StatefulWidget {
   const QRViewExample({super.key}) ;  // keyを追加
   @override
@@ -50,6 +52,7 @@ class _QRViewExampleState extends State<QRViewExample> {
     controller?.resumeCamera();
   }
 
+  //カメラ機能
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,6 +66,7 @@ class _QRViewExampleState extends State<QRViewExample> {
     );
   }
 
+  //qrを読み込んだ時に読み込まれる
   void _onQRViewCreated(QRViewController controller) {
     this.controller = controller;
     controller.scannedDataStream.listen((scanData) {
@@ -71,6 +75,7 @@ class _QRViewExampleState extends State<QRViewExample> {
     });
   }
 
+  //リソースの開放
   @override
   void dispose() {
     controller?.dispose();
