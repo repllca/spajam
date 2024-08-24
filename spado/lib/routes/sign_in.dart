@@ -25,6 +25,16 @@ class _SignInPageState extends State<SignInPage> {
     }
   }
 
+  Future<void> _signOut() async {
+    try {
+      await _auth.signOut();
+      print("サインアウト成功");
+      // サインアウト後の処理を追加
+    } catch (e) {
+      print("サインアウトエラー: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,6 +58,11 @@ class _SignInPageState extends State<SignInPage> {
             ElevatedButton(
               onPressed: _signIn,
               child: Text('サインイン'),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _signOut,
+              child: Text('サインアウト'),
             ),
           ],
         ),

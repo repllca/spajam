@@ -41,6 +41,7 @@ class _HomeState extends State<Home> {
           );
           if (newListText != null) {
             setState(() {
+              toDoList.add(newListText);
               final db = FirestoreService();
               final test = db.getTasksByUsername("tanaka");
               print(test);
