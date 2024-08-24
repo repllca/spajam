@@ -100,4 +100,35 @@ class FirestoreService {
       throw Exception('エラーが発生しました: $e');
     }
   }
+
+  /* 現在ログインしているユーザーの友達リストを取得 */
+  Future<List<Map<String, String>>> getFriendsList() async {
+    try {
+      // 現在ログインしているユーザーのUIDを取得
+      User? currentUser = auth.currentUser;
+
+      if (currentUser != null) {
+        String userId = currentUser.uid;
+
+        // 現在ログインしているユーザーの「friends」サブコレクションを取得
+        final querySnapshot = await db
+            .collection('users')
+            .doc(userId)
+            .collection('friends')
+            .get();
+
+        // 友達リストのデータをリストとして返す
+        return querySnapshot.docs.map((doc) {
+          return {
+            "id": doc.id,
+            "username": doc.data()['username'] as String,
+          };
+        }).toList();
+      } else {
+        return [];
+      }
+    } catch (e) {
+      throw Exception('エラーが発生しました: $e');
+    }
+  }
 }

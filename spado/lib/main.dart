@@ -89,9 +89,7 @@ class HomePage extends StatelessWidget {
   final List<Widget> _pageList = [
     Profile(),
     Todo(),
-    Settings(),
-    RegisterPage(),
-    SignInPage(),
+    SignInPage(), // 残りのページのみ
   ];
 
   @override
@@ -101,9 +99,9 @@ class HomePage extends StatelessWidget {
       child: Consumer<BottomNavigationModel>(
         builder: (context, model, child) {
           return Scaffold(
-            appBar: AppBar(
-              title: Text('todoリスト'),
-            ),
+            // appBar: AppBar(
+            //   title: Text('todoリスト'),
+            // ),
             body: AnimatedSwitcher(
               duration: Duration(milliseconds: 300),
               child: _pageList[model.currentIndex],
@@ -118,14 +116,6 @@ class HomePage extends StatelessWidget {
                 BottomNavigationBarItem(
                   icon: Icon(Icons.home),
                   label: 'todoリスト',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.settings),
-                  label: '設定',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.app_registration),
-                  label: '登録',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.login),
