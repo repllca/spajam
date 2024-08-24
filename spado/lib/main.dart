@@ -24,7 +24,43 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutterの練習',
       theme: ThemeData(
-        primaryColor: Colors.green,
+        primarySwatch: Colors.green,
+        scaffoldBackgroundColor: Colors.white,
+        textTheme: TextTheme(
+          bodyLarge: TextStyle(color: Colors.black87),
+          bodyMedium: TextStyle(color: Colors.black54),
+        ),
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.green,
+          elevation: 0,
+          iconTheme: IconThemeData(color: Colors.white),
+          titleTextStyle: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          backgroundColor: Colors.white,
+          selectedItemColor: Colors.green,
+          unselectedItemColor: Colors.grey,
+          selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
+          unselectedLabelStyle: TextStyle(fontWeight: FontWeight.normal),
+        ),
+        buttonTheme: ButtonThemeData(
+          buttonColor: Colors.green,
+          textTheme: ButtonTextTheme.primary,
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.green, // primary -> backgroundColor
+            foregroundColor: Colors.white, // onPrimary -> foregroundColor
+            textStyle: TextStyle(fontWeight: FontWeight.bold),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        ),
       ),
       home: AuthCheck(),
     );
@@ -37,16 +73,12 @@ class AuthCheck extends StatelessWidget {
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
-        // ユーザーがログインしているか確認
         if (snapshot.connectionState == ConnectionState.waiting) {
-          // ローディング中の表示
-          return CircularProgressIndicator();
+          return Center(child: CircularProgressIndicator());
         } else if (snapshot.hasData) {
-          // ログイン済みの場合
-          return HomePage(); // ログイン済みの場合は通常のホーム画面に遷移
+          return HomePage();
         } else {
-          // 未ログインの場合
-          return RegisterPage(); // 未ログインの場合は登録ページに遷移
+          return RegisterPage();
         }
       },
     );
@@ -69,7 +101,13 @@ class HomePage extends StatelessWidget {
       child: Consumer<BottomNavigationModel>(
         builder: (context, model, child) {
           return Scaffold(
-            body: _pageList[model.currentIndex],
+            appBar: AppBar(
+              title: Text('ホーム'),
+            ),
+            body: AnimatedSwitcher(
+              duration: Duration(milliseconds: 300),
+              child: _pageList[model.currentIndex],
+            ),
             bottomNavigationBar: BottomNavigationBar(
               type: BottomNavigationBarType.fixed,
               items: const <BottomNavigationBarItem>[
@@ -98,8 +136,6 @@ class HomePage extends StatelessWidget {
               onTap: (index) {
                 model.currentIndex = index;
               },
-              selectedItemColor: Colors.pinkAccent,
-              unselectedItemColor: Colors.black45,
             ),
           );
         },
