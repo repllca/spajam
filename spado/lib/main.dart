@@ -4,8 +4,15 @@ import 'models/bottom_navigation_model.dart';
 import 'routes/profile.dart';
 import 'routes/home.dart';
 import 'routes/settings.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'service.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(MyApp());
 }
 
