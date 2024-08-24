@@ -18,7 +18,7 @@ class Header extends StatelessWidget implements PreferredSizeWidget {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: IconButton(
-            icon: const Icon(Icons.qr_code),
+            icon: Icon(Icons.add),
             onPressed: () {
               // 押したときの処理
               final db = Firestoreservice();
