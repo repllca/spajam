@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'qrcode.dart';
 import 'service.dart';
 
 class Header extends StatelessWidget implements PreferredSizeWidget {
@@ -18,12 +18,16 @@ class Header extends StatelessWidget implements PreferredSizeWidget {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: IconButton(
-            icon: Icon(Icons.add),
+            icon: Icon(Icons.qr_code),
             onPressed: () {
               // 押したときの処理
               final db = FirestoreService();
               db.addTaskToCurrentUser("a");
               //QR押したときの処理
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const QRCodeScreen()),
+              );
             },
           ),
         )
