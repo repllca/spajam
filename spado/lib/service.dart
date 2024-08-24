@@ -70,48 +70,18 @@ class FirestoreService {
             .orderBy('created_at', descending: true)
             .get();
 
+        // タスクの中身をコンソールに表示
+        for (var doc in querySnapshot.docs) {
+          final taskData = doc.data();
+          print('Task Name: ${taskData['task_name']}');
+        }
+
+        // タスク名のリストとして返す
         return querySnapshot.docs
             .map((doc) => doc.data()['task_name'] as String)
             .toList();
       } else {
         return [];
-      }
-    } catch (e) {
-      throw Exception('エラーが発生しました: $e');
-    }
-  }
-
-  /* Aさんの友達リストにBさんを追加 */
-  Future<void> addFriend(String aUsername, String bUsername) async {
-    try {
-      // AさんとBさんのUIDを取得
-      final aUserId = await getUserIdFromUsername(aUsername);
-      final bUserId = await getUserIdFromUsername(bUsername);
-
-      if (aUserId != null && bUserId != null) {
-        // Aさんの友達リストにBさんのUIDを追加
-        await db
-            .collection('users')
-            .doc(aUserId)
-            .collection('friends')
-            .doc(bUserId)
-            .set({
-          'username': bUsername,
-          'added_at': FieldValue.serverTimestamp(),
-        });
-
-        // Bさんの友達リストにAさんのUIDを追加（双方向の友達リストの場合）
-        await db
-            .collection('users')
-            .doc(bUserId)
-            .collection('friends')
-            .doc(aUserId)
-            .set({
-          'username': aUsername,
-          'added_at': FieldValue.serverTimestamp(),
-        });
-      } else {
-        throw Exception('AさんまたはBさんが見つかりません。');
       }
     } catch (e) {
       throw Exception('エラーが発生しました: $e');

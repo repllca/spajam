@@ -22,7 +22,7 @@ class Header extends StatelessWidget implements PreferredSizeWidget {
             onPressed: () {
               // 押したときの処理
               final db = FirestoreService();
-              db.addFriend("kanda", "takahasi");
+              final tmp = db.getTasksByUsername("kanda");
               //QR押したときの処理
               Navigator.push(
                 context,
