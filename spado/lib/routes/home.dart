@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../header.dart';
 import '../todo_add_page.dart';
+import "../service.dart";
 
 class Home extends StatefulWidget {
   @override
@@ -40,7 +41,9 @@ class _HomeState extends State<Home> {
           );
           if (newListText != null) {
             setState(() {
-              toDoList.add(newListText);
+              final db = FirestoreService();
+              final test = db.getTasksByUsername("tanaka");
+              print(test);
             });
           }
         },
