@@ -4,8 +4,15 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'routes/profile.dart';
 
 // QRコードの表示
-class QRCodeScreen extends StatelessWidget {
-  const QRCodeScreen({super.key});  // keyを追加
+class QRCodeScreen extends StatefulWidget {
+  const QRCodeScreen({super.key});
+
+  @override
+  _QRCodeScreenState createState() => _QRCodeScreenState();
+}
+
+class _QRCodeScreenState extends State<QRCodeScreen> {
+  String? _selectedQRCode; // State variable to track selected QR code
 
   @override
   Widget build(BuildContext context) {
@@ -14,10 +21,42 @@ class QRCodeScreen extends StatelessWidget {
         title: const Text('QR Code'),
       ),
       body: Center(
-        child: QrImageView(
-          data: '1234567890',
-          version: QrVersions.auto,
-          size: 200.0,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Display icons and QR code
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.car_crash),
+                  onPressed: () {
+                    setState(() {
+                      _selectedQRCode = '1234567890'; // Set QR code data for this icon
+                    });
+                  },
+                ),
+                const SizedBox(width: 16), // Space between icons
+                IconButton(
+                  icon: const Icon(Icons.add_home),
+                  onPressed: () {
+                    setState(() {
+                      _selectedQRCode = '24352345'; // Set QR code data for this icon
+                    });
+                  },
+                ),
+              ],
+            ),
+            if (_selectedQRCode != null) // Conditionally display QR code based on selected icon
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0), // Add padding for spacing
+                child: QrImageView(
+                  data: _selectedQRCode!,
+                  version: QrVersions.auto,
+                  size: 200.0,
+                ),
+              ),
+          ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -32,6 +71,7 @@ class QRCodeScreen extends StatelessWidget {
     );
   }
 }
+
 
 // カメラ機能
 class CameraScreen extends StatefulWidget {
