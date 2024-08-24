@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'models/bottom_navigation_model.dart';
 import 'routes/profile.dart';
-import 'routes/home.dart';
+import 'routes/todolist.dart';
 import 'routes/settings.dart';
 import 'routes/register.dart';
 import 'routes/sign_in.dart';
@@ -88,7 +88,7 @@ class AuthCheck extends StatelessWidget {
 class HomePage extends StatelessWidget {
   final List<Widget> _pageList = [
     Profile(),
-    Home(),
+    todo(),
     Settings(),
     RegisterPage(),
     SignInPage(),
@@ -102,7 +102,7 @@ class HomePage extends StatelessWidget {
         builder: (context, model, child) {
           return Scaffold(
             appBar: AppBar(
-              title: Text('ホーム'),
+              title: Text('todoリスト'),
             ),
             body: AnimatedSwitcher(
               duration: Duration(milliseconds: 300),
@@ -117,7 +117,7 @@ class HomePage extends StatelessWidget {
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.home),
-                  label: 'ホーム',
+                  label: 'todoリスト',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.settings),

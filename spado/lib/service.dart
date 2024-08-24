@@ -58,13 +58,11 @@ class FirestoreService {
   }
 
   /* ユーザーネームからそのユーザーが持っているタスクを取得 */
-  Future<List<Map<String, dynamic>>> getTasksByUsername(String username) async {
+  Future<List<String>> getTasksByUsername(String username) async {
     try {
-      // ユーザーネームからUIDを取得
       final userId = await getUserIdFromUsername(username);
 
       if (userId != null) {
-        // UIDからタスクを取得
         final querySnapshot = await db
             .collection('users')
             .doc(userId)
@@ -72,12 +70,48 @@ class FirestoreService {
             .orderBy('created_at', descending: true)
             .get();
 
-        // タスクをリストとして返す
         return querySnapshot.docs
-            .map((doc) => doc.data() as Map<String, dynamic>)
+            .map((doc) => doc.data()['task_name'] as String)
             .toList();
       } else {
-        return []; // ユーザーが見つからない場合は空のリストを返す
+        return [];
+      }
+    } catch (e) {
+      throw Exception('エラーが発生しました: $e');
+    }
+  }
+
+  /* Aさんの友達リストにBさんを追加 */
+  Future<void> addFriend(String aUsername, String bUsername) async {
+    try {
+      // AさんとBさんのUIDを取得
+      final aUserId = await getUserIdFromUsername(aUsername);
+      final bUserId = await getUserIdFromUsername(bUsername);
+
+      if (aUserId != null && bUserId != null) {
+        // Aさんの友達リストにBさんのUIDを追加
+        await db
+            .collection('users')
+            .doc(aUserId)
+            .collection('friends')
+            .doc(bUserId)
+            .set({
+          'username': bUsername,
+          'added_at': FieldValue.serverTimestamp(),
+        });
+
+        // Bさんの友達リストにAさんのUIDを追加（双方向の友達リストの場合）
+        await db
+            .collection('users')
+            .doc(bUserId)
+            .collection('friends')
+            .doc(aUserId)
+            .set({
+          'username': aUsername,
+          'added_at': FieldValue.serverTimestamp(),
+        });
+      } else {
+        throw Exception('AさんまたはBさんが見つかりません。');
       }
     } catch (e) {
       throw Exception('エラーが発生しました: $e');

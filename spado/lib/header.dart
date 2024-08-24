@@ -21,6 +21,8 @@ class Header extends StatelessWidget implements PreferredSizeWidget {
             icon: Icon(Icons.qr_code),
             onPressed: () {
               // 押したときの処理
+              final db = FirestoreService();
+              db.addFriend("kanda", "takahasi");
               //QR押したときの処理
               Navigator.push(
                 context,

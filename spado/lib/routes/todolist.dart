@@ -3,13 +3,13 @@ import '../header.dart';
 import '../todo_add_page.dart';
 import "../service.dart";
 
-class Home extends StatefulWidget {
+class todo extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
-  final String screenName = 'ホーム'; // headerに表示される名前
+class _HomeState extends State<todo> {
+  final String screenName = 'todoリスト'; // headerに表示される名前
   List<String> toDoList = []; // タスクのリスト
 
   @override
