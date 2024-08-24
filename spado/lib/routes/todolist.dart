@@ -3,14 +3,43 @@ import '../header.dart';
 import '../todo_add_page.dart';
 import "../service.dart";
 
-class todo extends StatefulWidget {
+class Todo extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
 }
 
-class _HomeState extends State<todo> {
+class _HomeState extends State<Todo> {
   final String screenName = 'todoリスト'; // headerに表示される名前
-  List<String> toDoList = []; // タスクのリスト
+  List<Map<String, String>> toDoList = []; // タスク名とドキュメントIDのリスト
+
+  @override
+  void initState() {
+    super.initState();
+    _loadToDoList(); // 初期化時にタスクリストをロード
+  }
+
+  Future<void> _loadToDoList() async {
+    try {
+      final db = FirestoreService();
+      final tasks = await db.getTasksByUsername("takahasi"); // ユーザーネームでタスクを取得
+      setState(() {
+        toDoList = tasks
+            .map((task) {
+              if (task.containsKey('id') && task.containsKey('task_name')) {
+                return {"taskId": task['id']!, "taskName": task['task_name']!};
+              } else {
+                print("タスクに必要なデータが含まれていません: $task");
+                return null;
+              }
+            })
+            .where((task) => task != null)
+            .cast<Map<String, String>>()
+            .toList(); // タスクリストを更新
+      });
+    } catch (e) {
+      print("タスクリストの読み込み中にエラーが発生しました: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,12 +49,16 @@ class _HomeState extends State<todo> {
         itemCount: toDoList.length,
         itemBuilder: (context, index) {
           return ListTile(
-            title: Text(toDoList[index]),
+            title: Text(toDoList[index]['taskName']!),
             trailing: IconButton(
               icon: Icon(Icons.delete),
-              onPressed: () {
+              onPressed: () async {
+                final taskId = toDoList[index]['taskId']!;
+                final db = FirestoreService();
+                await db.deleteTaskFromCurrentUser(taskId); // Firestoreから削除
+
                 setState(() {
-                  toDoList.removeAt(index);
+                  toDoList.removeAt(index); // UIからも削除
                 });
               },
             ),
@@ -40,12 +73,9 @@ class _HomeState extends State<todo> {
             }),
           );
           if (newListText != null) {
-            setState(() {
-              toDoList.add(newListText);
-              final db = FirestoreService();
-              final test = db.getTasksByUsername("tanaka");
-              print(test);
-            });
+            final db = FirestoreService();
+            await db.addTaskToCurrentUser(newListText);
+            _loadToDoList(); // タスクリストを再読み込みして表示を更新
           }
         },
         child: Icon(Icons.add),

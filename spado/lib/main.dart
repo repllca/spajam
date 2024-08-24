@@ -88,7 +88,7 @@ class AuthCheck extends StatelessWidget {
 class HomePage extends StatelessWidget {
   final List<Widget> _pageList = [
     Profile(),
-    todo(),
+    Todo(),
     Settings(),
     RegisterPage(),
     SignInPage(),

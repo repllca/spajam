@@ -23,6 +23,23 @@ class FirestoreService {
     }
   }
 
+  Future<void> deleteTaskFromCurrentUser(String taskId) async {
+    User? currentUser = auth.currentUser;
+
+    if (currentUser != null) {
+      String userId = currentUser.uid;
+
+      await db
+          .collection('users')
+          .doc(userId)
+          .collection('tasks')
+          .doc(taskId)
+          .delete();
+    } else {
+      throw Exception('User is not signed in.');
+    }
+  }
+
   /* ユーザーネームからUIDを取得 */
   Future<String?> getUserIdFromUsername(String username) async {
     try {
@@ -57,8 +74,7 @@ class FirestoreService {
     }
   }
 
-  /* ユーザーネームからそのユーザーが持っているタスクを取得 */
-  Future<List<String>> getTasksByUsername(String username) async {
+  Future<List<Map<String, String>>> getTasksByUsername(String username) async {
     try {
       final userId = await getUserIdFromUsername(username);
 
@@ -70,16 +86,13 @@ class FirestoreService {
             .orderBy('created_at', descending: true)
             .get();
 
-        // タスクの中身をコンソールに表示
-        for (var doc in querySnapshot.docs) {
-          final taskData = doc.data();
-          print('Task Name: ${taskData['task_name']}');
-        }
-
-        // タスク名のリストとして返す
-        return querySnapshot.docs
-            .map((doc) => doc.data()['task_name'] as String)
-            .toList();
+        // タスク名とドキュメントIDをリストとして返す
+        return querySnapshot.docs.map((doc) {
+          return {
+            "id": doc.id,
+            "task_name": doc.data()['task_name'] as String,
+          };
+        }).toList();
       } else {
         return [];
       }
