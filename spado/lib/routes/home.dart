@@ -21,7 +21,7 @@ class _HomeState extends State<Home> {
           return ListTile(
             title: Text(toDoList[index]),
             trailing: IconButton(
-              icon: Icon(Icons.delete),
+              icon: const Icon(Icons.delete),
               onPressed: () {
                 setState(() {
                   toDoList.removeAt(index);
@@ -44,7 +44,7 @@ class _HomeState extends State<Home> {
             });
           }
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }
