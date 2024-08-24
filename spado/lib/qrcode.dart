@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'routes/profile.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 // QRコードの表示
 class QRCodeScreen extends StatefulWidget {
@@ -13,6 +15,22 @@ class QRCodeScreen extends StatefulWidget {
 
 class _QRCodeScreenState extends State<QRCodeScreen> {
   String? _selectedQRCode; // State variable to track selected QR code
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  User? user;
+  String? userId; // ユーザーIDを格納する変数
+
+  @override
+  void initState() {
+    super.initState();
+    // 現在ログインしているユーザーを取得
+    user = auth.currentUser;
+    if (user != null) {
+      userId = user!.uid; // UIDを取得して変数に格納
+      print('User ID: $userId'); // デバッグ用: ユーザーIDをコンソールに出力
+    } else {
+      print('No user is currently logged in');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +42,16 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Display icons and QR code
+            // Conditionally display QR code based on selected icon
+            if (_selectedQRCode != null)
+              QrImageView(
+                data: _selectedQRCode!,
+                version: QrVersions.auto,
+                size: 200.0,
+              ),
+            // Add spacing between QR code and icons
+            const SizedBox(height: 20.0),
+            // Row to arrange IconButtons horizontally
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -32,30 +59,28 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
                   icon: const Icon(Icons.car_crash),
                   onPressed: () {
                     setState(() {
-                      _selectedQRCode = '1234567890'; // Set QR code data for this icon
+                      _selectedQRCode = '珈琲,' + (userId ?? ''); // ユーザーIDを結合
                     });
                   },
                 ),
-                const SizedBox(width: 16), // Space between icons
                 IconButton(
                   icon: const Icon(Icons.add_home),
                   onPressed: () {
                     setState(() {
-                      _selectedQRCode = '24352345'; // Set QR code data for this icon
+                      _selectedQRCode = 'チョコレート,' + (userId ?? ''); // ユーザーIDを結合
+                    });
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(Icons.add_alarm_sharp),
+                  onPressed: () {
+                    setState(() {
+                      _selectedQRCode = 'おにぎり,' + (userId ?? ''); // ユーザーIDを結合
                     });
                   },
                 ),
               ],
             ),
-            if (_selectedQRCode != null) // Conditionally display QR code based on selected icon
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0), // Add padding for spacing
-                child: QrImageView(
-                  data: _selectedQRCode!,
-                  version: QrVersions.auto,
-                  size: 200.0,
-                ),
-              ),
           ],
         ),
       ),
@@ -71,7 +96,6 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
     );
   }
 }
-
 
 // カメラ機能
 class CameraScreen extends StatefulWidget {
