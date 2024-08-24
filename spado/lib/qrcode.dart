@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'routes/profile.dart';
 
 // QRコードの表示
 class QRCodeScreen extends StatelessWidget {
@@ -72,7 +73,23 @@ class _CameraScreenState extends State<CameraScreen> {
                 },
               ),
             ),
-            Text(readBarcode),
+            ElevatedButton(
+              onPressed: readBarcode.isNotEmpty
+                  ? () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Profile(),
+                        ),
+                      );
+                    }
+                  : null, // readBarcodeが空の場合、ボタンは無効になります
+              child: Text(
+                readBarcode.isNotEmpty
+                    ? 'バーコードを確認する'
+                    : 'スキャン結果を待っています',
+              ),
+            ),
           ],
         ),
       ),
