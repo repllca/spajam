@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'models/bottom_navigation_model.dart';
 import 'routes/profile.dart';
 import 'routes/todolist.dart';
-import 'routes/settings.dart';
 import 'routes/register.dart';
 import 'routes/sign_in.dart';
 import 'package:firebase_core/firebase_core.dart';
