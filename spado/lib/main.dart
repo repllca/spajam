@@ -25,17 +25,21 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
         scaffoldBackgroundColor: Colors.white,
-        textTheme: TextTheme(
-          bodyLarge: TextStyle(color: Colors.black87),
-          bodyMedium: TextStyle(color: Colors.black54),
-        ),
+        // textTheme: TextTheme(
+        //   headline6:
+        //       TextStyle(color: Colors.black87, fontSize: 20), // アプリ全体の見出し6のサイズ
+        //   bodyText1: TextStyle(
+        //       color: Colors.black87, fontSize: 18), // デフォルトのボディテキスト1のサイズ
+        //   bodyText2: TextStyle(
+        //       color: Colors.black54, fontSize: 16), // デフォルトのボディテキスト2のサイズ
+        // ),
         appBarTheme: AppBarTheme(
           backgroundColor: Colors.green,
           elevation: 0,
           iconTheme: IconThemeData(color: Colors.white),
           titleTextStyle: TextStyle(
             color: Colors.white,
-            fontSize: 20,
+            fontSize: 24, // アプリバーのタイトルの文字サイズ
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -43,8 +47,11 @@ class MyApp extends StatelessWidget {
           backgroundColor: Colors.white,
           selectedItemColor: Colors.green,
           unselectedItemColor: Colors.grey,
-          selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
-          unselectedLabelStyle: TextStyle(fontWeight: FontWeight.normal),
+          selectedLabelStyle: TextStyle(
+              fontWeight: FontWeight.bold, fontSize: 16), // ナビゲーションバーの選択ラベルのサイズ
+          unselectedLabelStyle: TextStyle(
+              fontWeight: FontWeight.normal,
+              fontSize: 14), // ナビゲーションバーの非選択ラベルのサイズ
         ),
         buttonTheme: ButtonThemeData(
           buttonColor: Colors.green,
@@ -54,7 +61,8 @@ class MyApp extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.green, // primary -> backgroundColor
             foregroundColor: Colors.white, // onPrimary -> foregroundColor
-            textStyle: TextStyle(fontWeight: FontWeight.bold),
+            textStyle: TextStyle(
+                fontWeight: FontWeight.bold, fontSize: 16), // ボタンのテキストサイズ
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),

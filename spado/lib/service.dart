@@ -131,4 +131,51 @@ class FirestoreService {
       throw Exception('エラーが発生しました: $e');
     }
   }
+
+  /* フレンドリストに友達を追加し、相手のフレンドリストにも自分を追加 */
+  Future<void> addFriend(String friendUsername) async {
+    User? currentUser = auth.currentUser;
+
+    if (currentUser != null) {
+      String userId = currentUser.uid;
+
+      try {
+        // Get the friend user's ID from their username
+        final friendUserId = await getUserIdFromUsername(friendUsername);
+
+        if (friendUserId != null) {
+          // Add friend to current user's friend list
+          await db
+              .collection('users')
+              .doc(userId)
+              .collection('friends')
+              .doc(friendUserId)
+              .set({
+            'username': friendUsername,
+            'added_at': FieldValue.serverTimestamp(),
+          });
+
+          // Add current user to friend's friend list
+          final currentUserName = await getUsernameFromUserId(userId);
+          if (currentUserName != null) {
+            await db
+                .collection('users')
+                .doc(friendUserId)
+                .collection('friends')
+                .doc(userId)
+                .set({
+              'username': currentUserName,
+              'added_at': FieldValue.serverTimestamp(),
+            });
+          }
+        } else {
+          throw Exception('Friend user not found.');
+        }
+      } catch (e) {
+        throw Exception('Error adding friend: $e');
+      }
+    } else {
+      throw Exception('User is not signed in.');
+    }
+  }
 }
