@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
             //footer部分
             bottomNavigationBar: BottomNavigationBar(
               type: BottomNavigationBarType.fixed,
-              items: [
+              items: const <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
                   icon: Icon(Icons.person),
                   label: 'プロフィール',
