@@ -21,21 +21,39 @@ class _HomeState extends State<Todo> {
   Future<void> _loadToDoList() async {
     try {
       final db = FirestoreService();
-      final tasks = await db.getTasksByUsername("takahasi"); // ユーザーネームでタスクを取得
-      setState(() {
-        toDoList = tasks
-            .map((task) {
-              if (task.containsKey('id') && task.containsKey('task_name')) {
-                return {"taskId": task['id']!, "taskName": task['task_name']!};
-              } else {
-                print("タスクに必要なデータが含まれていません: $task");
-                return null;
-              }
-            })
-            .where((task) => task != null)
-            .cast<Map<String, String>>()
-            .toList(); // タスクリストを更新
-      });
+      // 現在のユーザーのUIDを取得
+      final userId = db.auth.currentUser?.uid;
+
+      if (userId != null) {
+        // UIDからユーザーネームを取得
+        final username = await db.getUsernameFromUserId(userId);
+
+        if (username != null) {
+          // ユーザーネームでタスクを取得
+          final tasks = await db.getTasksByUsername(username);
+          setState(() {
+            toDoList = tasks
+                .map((task) {
+                  if (task.containsKey('id') && task.containsKey('task_name')) {
+                    return {
+                      "taskId": task['id']!,
+                      "taskName": task['task_name']!
+                    };
+                  } else {
+                    print("タスクに必要なデータが含まれていません: $task");
+                    return null;
+                  }
+                })
+                .where((task) => task != null)
+                .cast<Map<String, String>>()
+                .toList();
+          });
+        } else {
+          print("ユーザーネームが取得できませんでした。");
+        }
+      } else {
+        print("ユーザーがサインインしていません。");
+      }
     } catch (e) {
       print("タスクリストの読み込み中にエラーが発生しました: $e");
     }
