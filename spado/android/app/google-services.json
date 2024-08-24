@@ -1,0 +1,67 @@
+{
+  "project_info": {
+    "project_number": "326798647345",
+    "project_id": "yukemuri-prog",
+    "storage_bucket": "yukemuri-prog.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:326798647345:android:df2a6392ad6604689d3510",
+        "android_client_info": {
+          "package_name": "com.example.myapp.test"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgI82O6h80Q6onouVTLHCgECO6ib1zwaE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:326798647345:android:0811f1a1a76734ac9d3510",
+        "android_client_info": {
+          "package_name": "com.example.spado"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgI82O6h80Q6onouVTLHCgECO6ib1zwaE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:326798647345:android:384044da6b5d96619d3510",
+        "android_client_info": {
+          "package_name": "com.example.test1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgI82O6h80Q6onouVTLHCgECO6ib1zwaE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
