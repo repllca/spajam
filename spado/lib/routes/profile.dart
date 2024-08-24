@@ -1,32 +1,53 @@
 import 'package:flutter/material.dart';
 import '../header.dart';
-import '../todo_detail.dart'; // todo_detail.dart.dartをインポート
+import '../todo_detail.dart'; // todo_detail.dart をインポート
+import '../service.dart'; // FirestoreService をインポート
 
-class Profile extends StatelessWidget {
+class Profile extends StatefulWidget {
+  @override
+  _ProfileState createState() => _ProfileState();
+}
+
+class _ProfileState extends State<Profile> {
   final String screenName = '友達リスト'; // headerに表示される名前
-  final List<String> items = [
-    '友達1',
-    '友達2',
-    '友達3',
-    '友達4',
-    '友達5', // DBから友達のTODOを取得、表示を行いたい
-  ]; // 表示するリスト
+  List<String> friends = []; // 友達リスト
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFriendsList(); // 初期化時に友達リストをロード
+  }
+
+  Future<void> _loadFriendsList() async {
+    try {
+      final db = FirestoreService();
+      final friendsList = await db.getFriendsList(); // 友達リストを取得
+      setState(() {
+        friends = friendsList
+            .map((friend) => friend['username']!)
+            .toList(); // ユーザーネームのリストに変換
+      });
+    } catch (e) {
+      print("友達リストの読み込み中にエラーが発生しました: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: Header(headerTitle: screenName),
       body: ListView.builder(
-        itemCount: items.length,
+        itemCount: friends.length,
         itemBuilder: (context, index) {
           return ListTile(
-            title: Text(items[index]),
+            title: Text(friends[index]),
             onTap: () {
-              // タップしたらtodo_detail.dartに遷移
+              // タップしたら todo_detail.dart に遷移
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => TodoMessageScreen(friendName: items[index]),
+                  builder: (context) =>
+                      TodoMessageScreen(friendName: friends[index]),
                 ),
               );
             },
