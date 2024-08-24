@@ -1,11 +1,11 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
 
-//qrコードの表示
+// QRコードの表示
 class QRCodeScreen extends StatelessWidget {
-  const QRCodeScreen({super.key}) ;  // keyを追加
+  const QRCodeScreen({super.key});  // keyを追加
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,7 +13,7 @@ class QRCodeScreen extends StatelessWidget {
         title: const Text('QR Code'),
       ),
       body: Center(
-          child: QrImageView(
+        child: QrImageView(
           data: '1234567890',
           version: QrVersions.auto,
           size: 200.0,
@@ -24,7 +24,7 @@ class QRCodeScreen extends StatelessWidget {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const QRViewExample()),
+            MaterialPageRoute(builder: (context) => const CameraScreen()),
           );
         },
       ),
@@ -32,53 +32,50 @@ class QRCodeScreen extends StatelessWidget {
   }
 }
 
-//カメラ機能
-class QRViewExample extends StatefulWidget {
-  const QRViewExample({super.key}) ;  // keyを追加
+// カメラ機能
+class CameraScreen extends StatefulWidget {
+  const CameraScreen({Key? key}) : super(key: key);
+
   @override
-  State<StatefulWidget> createState() => _QRViewExampleState();
+  State<CameraScreen> createState() => _CameraScreenState();
 }
 
-class _QRViewExampleState extends State<QRViewExample> {
-  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-  QRViewController? controller;
+class _CameraScreenState extends State<CameraScreen> {
+  String readBarcode = '';
 
-  @override
-  void reassemble() {
-    super.reassemble();
-    if (Platform.isAndroid) {
-      controller?.pauseCamera();
-    }
-    controller?.resumeCamera();
-  }
-
-  //カメラ機能
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Scan QR Code'),
+        title: const Text('Mobile Scanner Demo'),
       ),
-      body: QRView(
-        key: qrKey,
-        onQRViewCreated: _onQRViewCreated,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            SizedBox(
+              width: 400,
+              height: 700,
+              child: MobileScanner(
+                onDetect: (capture) {
+                  final List<Barcode> barcodes = capture.barcodes;
+                  final value = barcodes.first.rawValue;
+                  if (value != null) {
+                    setState(() {
+                      readBarcode = value;
+                    });
+                  } else {
+                    setState(() {
+                      readBarcode = 'コードが読み取れません';
+                    });
+                  }
+                },
+              ),
+            ),
+            Text(readBarcode),
+          ],
+        ),
       ),
     );
-  }
-
-  //qrを読み込んだ時に読み込まれる
-  void _onQRViewCreated(QRViewController controller) {
-    this.controller = controller;
-    controller.scannedDataStream.listen((scanData) {
-      print(scanData.code);
-      // QRコードのデータを処理する
-    });
-  }
-
-  //リソースの開放
-  @override
-  void dispose() {
-    controller?.dispose();
-    super.dispose();
   }
 }
