@@ -18,6 +18,7 @@ class Header extends StatelessWidget implements PreferredSizeWidget {
           padding: const EdgeInsets.all(8.0),
           child: IconButton(
             icon: Icon(Icons.qr_code),
+            iconSize: 35,
             onPressed: () {
               // 押したときの処理
               //QR押したときの処理

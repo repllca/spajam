@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../header.dart';
-import '../todo_detail.dart'; // todo_detail.dart をインポート
-import '../service.dart'; // FirestoreService をインポート
+import '../todo_detail.dart';
+import '../service.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -9,23 +9,21 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  final String screenName = '友達リスト'; // headerに表示される名前
-  List<String> friends = []; // 友達リスト
+  final String screenName = '友達リスト';
+  List<String> friends = [];
 
   @override
   void initState() {
     super.initState();
-    _loadFriendsList(); // 初期化時に友達リストをロード
+    _loadFriendsList();
   }
 
   Future<void> _loadFriendsList() async {
     try {
       final db = FirestoreService();
-      final friendsList = await db.getFriendsList(); // 友達リストを取得
+      final friendsList = await db.getFriendsList();
       setState(() {
-        friends = friendsList
-            .map((friend) => friend['username']!)
-            .toList(); // ユーザーネームのリストに変換
+        friends = friendsList.map((friend) => friend['username']!).toList();
       });
     } catch (e) {
       print("友達リストの読み込み中にエラーが発生しました: $e");
@@ -40,28 +38,26 @@ class _ProfileState extends State<Profile> {
         itemCount: friends.length,
         itemBuilder: (context, index) {
           return Container(
-            margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
             decoration: BoxDecoration(
-              color: Colors.blueGrey[50], // 背景色
-              borderRadius: BorderRadius.circular(8),
+              color: Colors.lightBlueAccent, // 背景色を設定
+              borderRadius: BorderRadius.circular(10), // 角を丸くする
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.3),
-                  spreadRadius: 1,
-                  blurRadius: 5,
-                  offset: Offset(0, 2), // 影の位置
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 2,
+                  blurRadius: 7,
+                  offset: Offset(0, 3), // 影を追加
                 ),
               ],
             ),
             child: ListTile(
-              contentPadding:
-                  EdgeInsets.symmetric(vertical: 16, horizontal: 20),
               title: Text(
                 friends[index],
-                style: TextStyle(fontSize: 18, color: Colors.black87),
+                style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
               ),
               onTap: () {
-                // タップしたら todo_detail.dart に遷移
                 Navigator.push(
                   context,
                   MaterialPageRoute(

@@ -4,6 +4,7 @@ import '../todo_add_page.dart';
 import '../service.dart'; // FirestoreService をインポート
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 
 class Todo extends StatefulWidget {
   @override
@@ -66,7 +67,7 @@ class _TodoState extends State<Todo> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // カルーセルで友達リストを表示
+            // 友達リストカルーセルの実装
             CarouselSlider(
               options: CarouselOptions(
                 height: 100,
@@ -117,12 +118,17 @@ class _TodoState extends State<Todo> {
                                     ),
                                   ),
                                   SizedBox(height: 8),
-                                  Text(
-                                    "頑張って!",
-                                    style: TextStyle(
-                                      fontSize: 20.0,
-                                      color: Colors.white.withOpacity(0.8),
-                                    ),
+                                  AnimatedTextKit(
+                                    animatedTexts: [
+                                      WavyAnimatedText(
+                                        '頑張って!',
+                                        textStyle: TextStyle(
+                                          fontSize: 20.0,
+                                          color: Colors.white.withOpacity(0.8),
+                                        ),
+                                      ),
+                                    ],
+                                    isRepeatingAnimation: true,
                                   ),
                                 ],
                               ),
@@ -135,13 +141,15 @@ class _TodoState extends State<Todo> {
                 );
               }).toList(),
             ),
+            // ToDoリストの実装
             ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true, // 親のスクロールに委ねる
+              physics: NeverScrollableScrollPhysics(), // 内部でスクロールしないようにする
               itemCount: toDoList.length,
               itemBuilder: (context, index) {
                 final task = toDoList[index];
 
+                // 期限の表示を管理
                 String dueDateText = '';
                 if (task['dueDate'] != null) {
                   try {
@@ -156,7 +164,7 @@ class _TodoState extends State<Todo> {
                 return Container(
                   margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                   decoration: BoxDecoration(
-                    color: Colors.lightBlueAccent,
+                    color: Colors.lightBlueAccent, // ToDoの背景色
                     borderRadius: BorderRadius.circular(10),
                     boxShadow: [
                       BoxShadow(
@@ -173,7 +181,7 @@ class _TodoState extends State<Todo> {
                       task['title'] ?? 'タイトル未設定',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 24.0,
+                        fontSize: 24.0, // フォントサイズを設定
                       ),
                     ),
                     subtitle: Column(
