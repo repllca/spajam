@@ -5,8 +5,13 @@ class FirestoreService {
   final db = FirebaseFirestore.instance;
   final auth = FirebaseAuth.instance;
 
-  /* Create 作成 */
-  Future<void> addTaskToCurrentUser(String taskName) async {
+  /* タスクを追加 */
+  Future<void> addTaskToCurrentUser({
+    required String title,
+    String? description,
+    DateTime? dueDate,
+    String? priority,
+  }) async {
     User? currentUser = auth.currentUser;
 
     if (currentUser != null) {
@@ -14,7 +19,10 @@ class FirestoreService {
 
       await db.collection('users').doc(userId).collection('tasks').add(
         {
-          "task_name": taskName,
+          "title": title,
+          "description": description ?? '',
+          "dueDate": dueDate?.toIso8601String() ?? '',
+          "priority": priority ?? 'Low',
           "created_at": FieldValue.serverTimestamp(),
         },
       );
@@ -23,6 +31,7 @@ class FirestoreService {
     }
   }
 
+  /* タスクを削除 */
   Future<void> deleteTaskFromCurrentUser(String taskId) async {
     User? currentUser = auth.currentUser;
 
@@ -74,7 +83,8 @@ class FirestoreService {
     }
   }
 
-  Future<List<Map<String, String>>> getTasksByUsername(String username) async {
+  /* ユーザーネームでタスクを取得 */
+  Future<List<Map<String, dynamic>>> getTasksByUsername(String username) async {
     try {
       final userId = await getUserIdFromUsername(username);
 
@@ -86,11 +96,14 @@ class FirestoreService {
             .orderBy('created_at', descending: true)
             .get();
 
-        // タスク名とドキュメントIDをリストとして返す
         return querySnapshot.docs.map((doc) {
+          final data = doc.data();
           return {
             "id": doc.id,
-            "task_name": doc.data()['task_name'] as String,
+            "title": data['title'] as String,
+            "description": data['description'] as String?,
+            "dueDate": data['dueDate'] as String?,
+            "priority": data['priority'] as String?,
           };
         }).toList();
       } else {

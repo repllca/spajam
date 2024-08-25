@@ -6,7 +6,10 @@ class ToDoAddPage extends StatefulWidget {
 }
 
 class _ToDoAddPageState extends State<ToDoAddPage> {
-  String _text = '';
+  String _title = '';
+  String _description = '';
+  DateTime? _dueDate;
+  String _priority = 'Low';
 
   @override
   Widget build(BuildContext context) {
@@ -14,25 +17,88 @@ class _ToDoAddPageState extends State<ToDoAddPage> {
       appBar: AppBar(
         title: Text('リスト追加'),
       ),
-      body: Container(
-        padding: EdgeInsets.all(64),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
-              _text,
-              style: TextStyle(color: Colors.black),
+              'タイトル',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             TextField(
               onChanged: (String value) {
                 setState(() {
-                  _text = value;
+                  _title = value;
                 });
               },
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'タイトルを入力',
+              ),
             ),
-            const SizedBox(
-              height: 8,
+            const SizedBox(height: 16),
+            Text(
+              '説明',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
+            TextField(
+              onChanged: (String value) {
+                setState(() {
+                  _description = value;
+                });
+              },
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: '説明を入力',
+              ),
+              maxLines: 3,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              '期限',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            ListTile(
+              title: Text(_dueDate == null
+                  ? '日付を選択'
+                  : '${_dueDate!.toLocal()}'.split(' ')[0]),
+              trailing: Icon(Icons.calendar_today),
+              onTap: () async {
+                DateTime? selectedDate = await showDatePicker(
+                  context: context,
+                  initialDate: _dueDate ?? DateTime.now(),
+                  firstDate: DateTime(2000),
+                  lastDate: DateTime(2101),
+                );
+                if (selectedDate != null && selectedDate != _dueDate) {
+                  setState(() {
+                    _dueDate = selectedDate;
+                  });
+                }
+              },
+            ),
+            const SizedBox(height: 16),
+            Text(
+              '優先度',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            DropdownButton<String>(
+              value: _priority,
+              onChanged: (String? newValue) {
+                setState(() {
+                  _priority = newValue!;
+                });
+              },
+              items: <String>['Low', 'Medium', 'High']
+                  .map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 16),
             Container(
               width: double.infinity,
               child: ElevatedButton(
@@ -40,7 +106,12 @@ class _ToDoAddPageState extends State<ToDoAddPage> {
                     backgroundColor:
                         MaterialStatePropertyAll(Colors.greenAccent)),
                 onPressed: () {
-                  Navigator.of(context).pop(_text);
+                  Navigator.of(context).pop({
+                    'title': _title,
+                    'description': _description,
+                    'dueDate': _dueDate?.toIso8601String(),
+                    'priority': _priority,
+                  });
                 },
                 child: Text(
                   'リスト追加',

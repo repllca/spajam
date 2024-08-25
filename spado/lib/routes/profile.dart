@@ -39,18 +39,38 @@ class _ProfileState extends State<Profile> {
       body: ListView.builder(
         itemCount: friends.length,
         itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(friends[index]),
-            onTap: () {
-              // タップしたら todo_detail.dart に遷移
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      TodoMessageScreen(friendName: friends[index]),
+          return Container(
+            margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            decoration: BoxDecoration(
+              color: Colors.blueGrey[50], // 背景色
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.3),
+                  spreadRadius: 1,
+                  blurRadius: 5,
+                  offset: Offset(0, 2), // 影の位置
                 ),
-              );
-            },
+              ],
+            ),
+            child: ListTile(
+              contentPadding:
+                  EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+              title: Text(
+                friends[index],
+                style: TextStyle(fontSize: 18, color: Colors.black87),
+              ),
+              onTap: () {
+                // タップしたら todo_detail.dart に遷移
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        TodoMessageScreen(friendName: friends[index]),
+                  ),
+                );
+              },
+            ),
           );
         },
       ),
