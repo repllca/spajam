@@ -13,12 +13,13 @@ class Todo extends StatefulWidget {
 class _TodoState extends State<Todo> {
   final String screenName = 'todoリスト';
   List<Map<String, dynamic>> toDoList = [];
-  List<String> friendList = []; // 友達リスト
+  List<Map<String, String>> friendList = []; // 友達リストのデータ構造を変更
 
   @override
   void initState() {
     super.initState();
     _loadToDoList();
+    _loadFriendList(); // 友達リストをロード
   }
 
   Future<void> _loadToDoList() async {
@@ -27,25 +28,34 @@ class _TodoState extends State<Todo> {
 
     if (currentUser != null) {
       try {
-        // Get the current user's username
         String? username = await db.getUsernameFromUserId(currentUser.uid);
 
         if (username != null) {
-          // Fetch the tasks using the username
           final tasks = await db.getTasksByUsername(username);
           setState(() {
             toDoList = tasks;
           });
         } else {
-          // Handle case where username is not found
           print('Username not found for current user.');
         }
       } catch (e) {
-        // Handle any errors that occur during the process
         print('Error loading to-do list: $e');
       }
     } else {
       print('No user is currently signed in.');
+    }
+  }
+
+  Future<void> _loadFriendList() async {
+    final db = FirestoreService();
+
+    try {
+      final friends = await db.getFriendsList();
+      setState(() {
+        friendList = friends;
+      });
+    } catch (e) {
+      print('Error loading friend list: $e');
     }
   }
 
@@ -59,7 +69,7 @@ class _TodoState extends State<Todo> {
             // カルーセルで友達リストを表示
             CarouselSlider(
               options: CarouselOptions(
-                height: 100, // 高さを調整
+                height: 100,
                 autoPlay: true,
                 autoPlayInterval: Duration(seconds: 3),
                 viewportFraction: 0.7,
@@ -72,14 +82,14 @@ class _TodoState extends State<Todo> {
                       width: MediaQuery.of(context).size.width,
                       margin: EdgeInsets.symmetric(horizontal: 5.0),
                       decoration: BoxDecoration(
-                        color: Colors.blueAccent, // 吹き出しの背景色
+                        color: Colors.blueAccent,
                         borderRadius: BorderRadius.circular(10),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.grey.withOpacity(0.5),
                             spreadRadius: 2,
                             blurRadius: 7,
-                            offset: Offset(0, 3), // 吹き出しの影の位置
+                            offset: Offset(0, 3),
                           ),
                         ],
                       ),
@@ -100,7 +110,7 @@ class _TodoState extends State<Todo> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
-                                    friend,
+                                    friend['username'] ?? 'Unknown',
                                     style: TextStyle(
                                       fontSize: 16.0,
                                       color: Colors.white,
@@ -126,13 +136,12 @@ class _TodoState extends State<Todo> {
               }).toList(),
             ),
             ListView.builder(
-              shrinkWrap: true, // ここでスクロールの問題を解決
-              physics: NeverScrollableScrollPhysics(), // 外部のスクロールビューに委ねる
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
               itemCount: toDoList.length,
               itemBuilder: (context, index) {
                 final task = toDoList[index];
 
-                // 期限の表示を管理
                 String dueDateText = '';
                 if (task['dueDate'] != null) {
                   try {
@@ -147,14 +156,14 @@ class _TodoState extends State<Todo> {
                 return Container(
                   margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                   decoration: BoxDecoration(
-                    color: Colors.lightBlueAccent, // ToDoの背景色
+                    color: Colors.lightBlueAccent,
                     borderRadius: BorderRadius.circular(10),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.grey.withOpacity(0.3),
                         spreadRadius: 2,
                         blurRadius: 5,
-                        offset: Offset(0, 3), // 影の位置
+                        offset: Offset(0, 3),
                       ),
                     ],
                   ),
@@ -164,7 +173,7 @@ class _TodoState extends State<Todo> {
                       task['title'] ?? 'タイトル未設定',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 24.0, // ここでフォントサイズを設定
+                        fontSize: 24.0,
                       ),
                     ),
                     subtitle: Column(
@@ -236,7 +245,6 @@ class _TodoState extends State<Todo> {
   }
 }
 
-// 吹き出しの三角形部分を描画するクラス
 class TrianglePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
