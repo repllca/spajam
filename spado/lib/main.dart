@@ -118,7 +118,7 @@ class HomePage extends StatelessWidget {
               items: const <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
                   icon: Icon(Icons.person),
-                  label: 'プロフィール',
+                  label: '応援ともだち',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.home),
@@ -126,7 +126,7 @@ class HomePage extends StatelessWidget {
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.login),
-                  label: 'サインイン',
+                  label: 'サインアウト',
                 ),
               ],
               currentIndex: model.currentIndex,

@@ -39,26 +39,23 @@ class _SignInPageState extends State<SignInPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('サインイン'),
+        title: Text('サインアウト'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(labelText: 'Email'),
-            ),
-            TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
-              obscureText: true,
-            ),
+            // TextField(
+            //   controller: _emailController,
+            //   decoration: InputDecoration(labelText: 'Email'),
+            // ),
+            // TextField(
+            //   controller: _passwordController,
+            //   decoration: InputDecoration(labelText: 'Password'),
+            //   obscureText: true,
+            // ),
             SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _signIn,
-              child: Text('サインイン'),
-            ),
+            //
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: _signOut,
