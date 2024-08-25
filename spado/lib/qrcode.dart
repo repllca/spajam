@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'routes/profile.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 // QRコードの表示
@@ -56,7 +56,8 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
-                  icon: const Icon(Icons.car_crash),
+                  iconSize: 48.0, // アイコンサイズを48ピクセルに設定
+                  icon: const Icon(Icons.coffee, color: Colors.brown), // コーヒーアイコン
                   onPressed: () {
                     setState(() {
                       _selectedQRCode = '珈琲,' + (userId ?? ''); // ユーザーIDを結合
@@ -64,15 +65,17 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
                   },
                 ),
                 IconButton(
-                  icon: const Icon(Icons.add_home),
+                  iconSize: 48.0, // アイコンサイズを48ピクセルに設定
+                  icon: const Icon(Icons.donut_large, color: Colors.pink), // ドーナツアイコン
                   onPressed: () {
                     setState(() {
-                      _selectedQRCode = 'チョコレート,' + (userId ?? ''); // ユーザーIDを結合
+                      _selectedQRCode = 'ドーナッツ,' + (userId ?? ''); // ユーザーIDを結合
                     });
                   },
                 ),
                 IconButton(
-                  icon: const Icon(Icons.add_alarm_sharp),
+                  iconSize: 48.0, // アイコンサイズを48ピクセルに設定
+                  icon: const Icon(Icons.fastfood, color: Colors.orange), // 食べ物アイコン（例: ハンバーガー）
                   onPressed: () {
                     setState(() {
                       _selectedQRCode = 'おにぎり,' + (userId ?? ''); // ユーザーIDを結合

@@ -23,10 +23,13 @@ dependencies:
   carousel_slider: ^5.0.0
   tutorial_coach_mark: ^1.2.11
   shared_preferences: ^2.3.2
+  material_design_icons_flutter: ^6.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
   provider:
+
 flutter:
 
   uses-material-design: true
