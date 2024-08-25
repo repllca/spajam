@@ -4,6 +4,9 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'routes/profile.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'service.dart';
 
 // QRコードの表示
 class QRCodeScreen extends StatefulWidget {
@@ -57,7 +60,8 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
               children: [
                 IconButton(
                   iconSize: 48.0, // アイコンサイズを48ピクセルに設定
-                  icon: const Icon(Icons.coffee, color: Colors.brown), // コーヒーアイコン
+                  icon:
+                      const Icon(Icons.coffee, color: Colors.brown), // コーヒーアイコン
                   onPressed: () {
                     setState(() {
                       _selectedQRCode = '珈琲,' + (userId ?? ''); // ユーザーIDを結合
@@ -66,7 +70,8 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
                 ),
                 IconButton(
                   iconSize: 48.0, // アイコンサイズを48ピクセルに設定
-                  icon: const Icon(Icons.donut_large, color: Colors.pink), // ドーナツアイコン
+                  icon: const Icon(Icons.donut_large,
+                      color: Colors.pink), // ドーナツアイコン
                   onPressed: () {
                     setState(() {
                       _selectedQRCode = 'ドーナッツ,' + (userId ?? ''); // ユーザーIDを結合
@@ -75,7 +80,8 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
                 ),
                 IconButton(
                   iconSize: 48.0, // アイコンサイズを48ピクセルに設定
-                  icon: const Icon(Icons.fastfood, color: Colors.orange), // 食べ物アイコン（例: ハンバーガー）
+                  icon: const Icon(Icons.fastfood,
+                      color: Colors.orange), // 食べ物アイコン（例: ハンバーガー）
                   onPressed: () {
                     setState(() {
                       _selectedQRCode = 'おにぎり,' + (userId ?? ''); // ユーザーIDを結合
@@ -142,21 +148,34 @@ class _CameraScreenState extends State<CameraScreen> {
             ),
             ElevatedButton(
               onPressed: readBarcode.isNotEmpty
-                  ? () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Profile(),
-                        ),
-                      );
+                  ? () async {
+                      final db = FirestoreService();
+                      List<String> fruits = readBarcode.split(",");
+
+                      // Await the result of the asynchronous call
+                      final String? userName =
+                          await db.getUsernameFromUserId(fruits[1]);
+
+                      if (userName != null) {
+                        // Ensure the userName is not null before using it
+                        db.addFriend(userName);
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Profile(),
+                          ),
+                        );
+                      } else {
+                        // Handle the case where userName is null
+                        print('Username could not be retrieved.');
+                      }
                     }
                   : null, // readBarcodeが空の場合、ボタンは無効になります
               child: Text(
-                readBarcode.isNotEmpty
-                    ? 'バーコードを確認する'
-                    : 'スキャン結果を待っています',
+                readBarcode.isNotEmpty ? '友達を追加する' : 'スキャン結果を待っています',
               ),
-            ),
+            )
           ],
         ),
       ),
